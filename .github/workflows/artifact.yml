@@ -9,6 +9,8 @@ on:
 jobs:
   release-on-push:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -23,14 +25,7 @@ jobs:
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$file was changed"
           done
-
-
-  tag-on-push:
-    needs: release-on-push
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
+          
       - id: release
         uses: rymndhng/release-on-push-action@master
         with:
