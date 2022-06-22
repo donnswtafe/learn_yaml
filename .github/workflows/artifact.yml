@@ -1,30 +1,21 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Artifact Example
-
-on:
-#  push:
-#    branches: [ "main" ]
-
-  workflow_dispatch:
-
-env:
-    ARTIFACT_NAME: myartifact
-
+on: 
+  push:
+    branches:
+      - master
 
 jobs:
-  job1:
-    name: Job 1
+  release-on-push:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Step one
-        uses: actions/checkout@v3
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.0
+      - id: release
+        uses: rymndhng/release-on-push-action@master
         with:
-            # Artifact name
-            name: ${{env.ARTIFACT_NAME }}
-            # Destination path
-            path: .
-      
+          bump_version_scheme: minor
+          tag_prefix: v
+          
+      - name: Check Output Parameters
+        run: |
+          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
+          echo "Got release version ${{ steps.release.outputs.version }}"
